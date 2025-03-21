@@ -88,6 +88,7 @@ const ContestPage = () => {
         : { [selectedStatus]: filteredContests };
 
 
+
     return (
         <div className="p-4 grid lg:flex gap-4">
             <div className="lg:w-1/4 lg:min-w-[260px] overflow-y-auto">
@@ -105,7 +106,12 @@ const ContestPage = () => {
             <div className="flex-1 overflow-y-auto h-full">
                 {selectedStatus === 'All' && <p className="font-bold text-2xl">All Contests</p>}
             {selectedStatus === 'All' ? (
-                    Object.entries(groupedContests).map(([status, contests]) => (
+                Object.entries(groupedContests)
+                    .sort(([statusA], [statusB]) => {
+                        const statusOrder = { Ongoing: 0, Upcoming: 1, Finished: 2 };
+                        return statusOrder[statusA] - statusOrder[statusB];
+                    })
+                    .map(([status, contests]) => (
                         contests.length > 0 && (
                             <div key={status} >
                                 <div className="h-full">
