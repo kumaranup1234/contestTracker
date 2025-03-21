@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+    --color-blue-1000: hsl(224, 71.4%, 4.1%);
+}
