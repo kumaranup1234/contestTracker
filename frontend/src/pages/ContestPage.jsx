@@ -86,8 +86,7 @@ const ContestPage = () => {
             return acc;
         }, {})
         : { [selectedStatus]: filteredContests };
-
-
+    // [['Ongoing', data2], ['Upcoming', data3], ['Finished', data1]] for the sort function
 
     return (
         <div className="p-4 grid lg:flex gap-4">

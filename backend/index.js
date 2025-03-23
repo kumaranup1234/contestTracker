@@ -6,8 +6,6 @@ const contestRoutes = require('./src/routes/contestRoutes');
 const videoRoutes = require('./src/routes/videoRoutes');
 const { connectDB } = require('./src/config/db');
 
-
-
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(cors({

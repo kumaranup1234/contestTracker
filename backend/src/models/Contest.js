@@ -13,4 +13,9 @@ const contestSchema = new mongoose.Schema({
     lastUpdated: { type: Date, default: Date.now }
 });
 
+contestSchema.pre('save', function(next) {
+    this.lastUpdated = Date.now();
+    next();
+});
+
 module.exports = mongoose.model('Contest', contestSchema);

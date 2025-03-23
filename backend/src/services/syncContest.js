@@ -1,45 +1,36 @@
 const Contest = require("../models/Contest");
-const {fetchCodeforcesContests} = require("./codeforcesService");
-const {fetchCodechefContests} = require("./codechefService");
-const {fetchLeetcodeContests} = require("./leetcodeService");
+const { fetchCodeforcesContests } = require("./codeforcesService");
+const { fetchCodechefContests } = require("./codechefService");
+const { fetchLeetcodeContests } = require("./leetcodeService");
 
 const syncContestsIfNeeded = async () => {
-    const contest = await Contest.findOne({});
-
+    const contestCount = await Contest.countDocuments();
+    const latestContest = await Contest.findOne({}, {}, { sort: { lastUpdated: -1 } });
     const currentTime = new Date();
-    let timeAfter24Hours;
 
-    if (contest) {
-        const lastUpdated = new Date(contest.lastUpdated);
-        timeAfter24Hours = new Date(lastUpdated);
-        timeAfter24Hours.setHours(timeAfter24Hours.getHours() + 24);
-    }
-
-    if (!contest || currentTime >= timeAfter24Hours) {
-        console.log('No contests found. Syncing contests for the first time...');
+    if (contestCount === 0 || !latestContest || currentTime - latestContest.lastUpdated >= 24 * 60 * 60 * 1000) {
+        console.log('Syncing contests..');
 
         const codeforces = await fetchCodeforcesContests();
         const codechef = await fetchCodechefContests();
         const leetcode = await fetchLeetcodeContests();
-
-        console.log(codeforces.length);
-
         const allContests = [...codeforces, ...codechef, ...leetcode];
 
-        for (const contest of allContests) {
-            await Contest.findOneAndUpdate(
-                { contestId: contest.contestId },
-                contest,
-                { upsert: true, new: true }
-            );
-        }
-        console.log('All contests inserted successfully.');
-    } else{
-        console.log('Contests already exist. No sync needed.');
-    }
+        const bulkOps = allContests.map(contest => ({
+            updateOne: {
+                filter: { contestId: contest.contestId },
+                update: { $set: contest },
+                upsert: true,
+            }
+        }));
+        await Contest.bulkWrite(bulkOps);
 
+        console.log('All contests inserted or updated successfully.');
+    } else {
+        console.log('Contests are up-to-date. No sync needed.');
+    }
 };
 
 module.exports = {
     syncContestsIfNeeded
-}
+};
