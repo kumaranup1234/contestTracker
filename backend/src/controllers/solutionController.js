@@ -3,7 +3,7 @@ const Contest = require("../models/Contest");
 
 const putVideoLink = async (req, res) => {
     const token = req.query.token;
-    const secretToken = `Bearer ${process.env.CRON_SECRET_TOKEN}`;
+    const secretToken = process.env.CRON_SECRET_TOKEN;
 
     if (!token || token !== secretToken) {
         return res.status(403).json({ message: 'Forbidden: Invalid token' });
