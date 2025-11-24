@@ -5,7 +5,7 @@ import toast, {Toaster} from "react-hot-toast";
 function App() {
 
     const toggleDarkMode = () => {
-        return toast('Coming soon! 🛠');
+        return toast('Coming soon!');
     }
 
     return (

@@ -11,9 +11,11 @@ const syncContestsIfNeeded = async () => {
     if (contestCount === 0 || !latestContest || currentTime - latestContest.lastUpdated >= 24 * 60 * 60 * 1000) {
         console.log('Syncing contests..');
 
-        const codeforces = await fetchCodeforcesContests();
-        const codechef = await fetchCodechefContests();
-        const leetcode = await fetchLeetcodeContests();
+        const [codeforces, codechef, leetcode] = await Promise.all([
+            fetchCodeforcesContests(),
+            fetchCodechefContests(),
+            fetchLeetcodeContests()
+        ]);
         const allContests = [...codeforces, ...codechef, ...leetcode];
 
         const bulkOps = allContests.map(contest => ({

@@ -39,15 +39,15 @@ const ContestPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                toast.loading("⏳ Fetching contests from the server. Please wait!");
+                toast.loading("Fetching contests from the server. Please wait!");
                 const data = await fetchContests();
                 setContests(data);
                 toast.dismiss();
-                toast.success("✅ Data loaded successfully! 🎉");
+                toast.success("Data loaded successfully!");
             } catch (error) {
                 console.error("Error fetching contests:", error);
                 toast.dismiss();
-                toast.error("❗ Error fetching contests. Please try again. 🚫");
+                toast.error("Error fetching contests. Please try again.");
             }
         };
         fetchData();
